@@ -1,0 +1,9 @@
+[Core]
+Name = WEBAPP
+Module = webapp
+
+[Documentation]
+Description = Web UI based backend
+
+[Python]
+Version = 3
