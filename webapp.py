@@ -108,7 +108,8 @@ class WebappBackend(ErrBot):
         if text_room not in self._rooms:
             self._rooms.insert(0, text_room)
         else:
-            self._rooms.insert(0, self._rooms.pop(self._rooms.index(text_room)))
+            self._rooms.insert(
+                0, self._rooms.pop(self._rooms.index(text_room)))
         return text_room
 
     def serve_forever(self):
