@@ -2,26 +2,50 @@
 <html lang="en">
   <head>
     <title>Errbot Webapp backend plugin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
   </head>
   <body>
-    <h1>Errbot Webapp backend plugin</h1>
-    <hr />
-    <p>
-      <form id="send-message-frm">
-        <input id="send-message-ipt" type="text"/>
-        <button id="send-message-btn">Send</button>
-      </form>
-    </p>
-    <hr />
-    <table>
-      <tr>
-        <th>Message:</th><td id="last-message"></td>
-      </tr>
-      <tr>
-        <th>Response:</th><td id="last-response"></td>
-      </tr>
-    </table>
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Errbot Webapp backend plugin</h1>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <form id="send-message-frm">
+              <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input class="input" type="text" placeholder="Type message" id="send-message-ipt">
+                </div>
+                <div class="control">
+                  <a class="button is-info" id="send-message-btn">
+                    Send
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="columns">
+        <div class="column">
+          <h3 class="subtitle">Message:</h3>
+          <p id="last-message"></p>
+        </div>
+        <div class="column">
+          <h3 class="subtitle">Response:</h3>
+          <div id="last-response"></p>
+        </div>
+      </div>
+    </section>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.2/marked.min.js"></script>
   <script type="text/javascript">
     var frmElm = document.getElementById('send-message-frm')
     var iptElm = document.getElementById('send-message-ipt')
@@ -35,7 +59,7 @@
       .then((resp) => resp.text())
       .then((respBody) => {
         document.getElementById('last-message').textContent = msg
-        document.getElementById('last-response').textContent = respBody
+        document.getElementById('last-response').innerHTML = marked(respBody)
       })
       iptElm.value = ''
       e.preventDefault()
