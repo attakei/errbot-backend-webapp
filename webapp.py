@@ -1,11 +1,12 @@
 import logging
+from pathlib import Path
 from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.backends.text import TextRoom
 from errbot.core import ErrBot
 from sanic import Sanic
-from sanic.response import text
+from sanic.response import text, html
 
 
 Logger = logging.getLogger(__name__)
@@ -133,11 +134,21 @@ class WebappBackend(ErrBot):
 class WebappServer(object):
     def __init__(self, errbot: WebappBackend):
         self._errbot = errbot
+        self._static_dir = Path(__file__).parent / 'resources'
         self._app = Sanic(__name__)
+        self._app.static('', str(self._static_dir))
+        self._app.route('/')(self._get_index)
         self._app.route('/msg', methods=['POST'])(self._post_message)
 
     def run(self):
         self._app.run()
+
+    async def _get_index(self, request):
+        index_html = self._static_dir / 'index.html'
+        body = ''
+        with index_html.open() as fp:
+            body = fp.read()
+        return html(body)
 
     async def _post_message(self, request):
         msg = self._errbot.build_message(request.body.decode())
