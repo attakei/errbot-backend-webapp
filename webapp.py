@@ -1,20 +1,24 @@
+import asyncio
 import logging
 from pathlib import Path
+from queue import Queue
 from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.backends.text import TextRoom
 from errbot.core import ErrBot
 from sanic import Sanic
-from sanic.response import text, html
+from sanic.response import html
+from sanic.websocket import WebSocketProtocol
 
 
 Logger = logging.getLogger(__name__)
 
 
 class WebappPerson(Person):
-    def __init__(self, person):
+    def __init__(self, person, **opts):
         self._person = person
+        self._opts = opts
 
     @property
     def person(self):
@@ -36,6 +40,10 @@ class WebappPerson(Person):
     def fullname(self):
         return self._person
 
+    @property
+    def opts(self):
+        return self._opts
+
 
 class WebappMessage(Message):
     def __init__(
@@ -48,10 +56,20 @@ class WebappMessage(Message):
             partial: bool = False,
             extras: Mapping = None,
             flow=None,
-            req=None,
             ):
         super().__init__(body, frm, to, parent, delayed, partial, flow)
-        self.req = req
+
+    def clone(self):
+        return WebappMessage(
+            body=self._body,
+            frm=self._from,
+            to=self._to,
+            parent=self._parent,
+            delayed=self._delayed,
+            partial=self._partial,
+            extras=self._extras,
+            flow=self._flow,
+        )
 
 
 class WebappBackend(ErrBot):
@@ -67,7 +85,6 @@ class WebappBackend(ErrBot):
         else:
             self.bot_identifier = self.build_identifier('@webmaster')
         self.webapp = None
-        self.webapp_thread = None
         self._rooms = []
 
     def build_identifier(self, text_representation: str) -> Identifier:
@@ -88,7 +105,6 @@ class WebappBackend(ErrBot):
             private: bool = False,
             threaded: bool = False) -> WebappMessage:
         reply = self.build_message(text)
-        reply.req = msg.req
         reply.frm = msg.to
         reply.to = msg.frm
         return reply
@@ -118,31 +134,39 @@ class WebappBackend(ErrBot):
         self.webapp = WebappServer(self)
         self.webapp.run()
 
-    async def callback_message(self, msg: WebappMessage):
+    def callback_message(self, msg: WebappMessage):
         super().callback_message(msg)
 
-    def send_simple_reply(
-            self,
-            msg: WebappMessage,
-            text: str,
-            private=False,
-            threaded=False
-            ):
-        msg.req['errbot_reply'] = text
-        super().send_simple_reply(msg, text, private, threaded)
+    def send_message(self, partial_message: WebappMessage):
+        super().send_message(partial_message)
+        to_: WebappPerson = partial_message.to
+        body_ = partial_message.body
+        ws_ = to_.opts.get('websocket', False)
+        if ws_:
+            self.webapp._queue.put(ws_.send(body_))
 
 
 class WebappServer(object):
     def __init__(self, errbot: WebappBackend):
         self._errbot = errbot
         self._static_dir = Path(__file__).parent / 'resources'
+        self._queue = Queue()
         self._app = Sanic(__name__)
         self._app.static('', str(self._static_dir))
         self._app.route('/')(self._get_index)
-        self._app.route('/msg', methods=['POST'])(self._post_message)
+        self._app.websocket('/connect')(self._handle_socket)
+        self._app.add_task(self._process_queue)
 
     def run(self):
-        self._app.run()
+        self._app.run(protocol=WebSocketProtocol)
+
+    async def _process_queue(self):
+        while True:
+            if self._queue.empty():
+                await asyncio.sleep(1)
+                continue
+            while not self._queue.empty():
+                await self._queue.get()
 
     async def _get_index(self, request):
         index_html = self._static_dir / 'index.html'
@@ -151,10 +175,12 @@ class WebappServer(object):
             body = fp.read()
         return html(body)
 
-    async def _post_message(self, request):
-        msg = self._errbot.build_message(request.body.decode())
-        msg.frm = self._errbot.build_identifier('@anonymous')
-        msg.to = self._errbot.bot_identifier
-        msg.req = request
-        await self._errbot.callback_message(msg)
-        return text(msg.req['errbot_reply'])
+    async def _handle_socket(self, request, ws):
+        frm = WebappPerson(
+            '@anonymous', websocket=ws)
+        while True:
+            data = await ws.recv()
+            msg = self._errbot.build_message(data)
+            msg.frm = frm
+            msg.to = self._errbot.bot_identifier
+            self._errbot.callback_message(msg)
