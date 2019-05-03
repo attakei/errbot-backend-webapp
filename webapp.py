@@ -73,7 +73,11 @@ class WebappMessage(Message):
 
 
 class WebappBackend(ErrBot):
-    """Webapplication backend core class"""
+    """Webapplication backend core class
+
+    Messages is exchanging by WebSocket,
+    because response message is possibly to be splitted
+    """
     def __init__(self, config):
         super().__init__(config)
         Logger.debug('Initializing Webapp backend')
@@ -138,6 +142,8 @@ class WebappBackend(ErrBot):
         super().callback_message(msg)
 
     def send_message(self, partial_message: WebappMessage):
+        """Overrided: after regular process, it send body to WebSocket of user
+        """
         super().send_message(partial_message)
         to_: WebappPerson = partial_message.to
         body_ = partial_message.body
@@ -161,6 +167,7 @@ class WebappServer(object):
         self._app.run(protocol=WebSocketProtocol)
 
     async def _process_queue(self):
+        """Sanic background task to send WebSocket messages"""
         while True:
             if self._queue.empty():
                 await asyncio.sleep(1)
@@ -169,6 +176,7 @@ class WebappServer(object):
                 await self._queue.get()
 
     async def _get_index(self, request):
+        """Render index document"""
         index_html = self._static_dir / 'index.html'
         body = ''
         with index_html.open() as fp:
@@ -176,6 +184,11 @@ class WebappServer(object):
         return html(body)
 
     async def _handle_socket(self, request, ws):
+        """Handle WebSocket connection.
+
+        - Waiting for sending message
+        - Pass message to Errbot
+        """
         frm = WebappPerson(
             '@anonymous', websocket=ws)
         while True:

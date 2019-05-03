@@ -2,10 +2,57 @@
 Errbot Webapp backend plugin
 ============================
 
+**This is alpha-level implementation. Use only local**
+
 Web UI based backend interface for Errbot (not Webhook feature).
+
+Overview
+========
+
+This plugin can exchange messages Errbot and any browsers by WebSocket.
+It may be able to supply public chat-bot on a website with Errbot.
+
+Demo
+====
+
+Not yet. Display screenshot after.
 
 Features
 ========
 
-* HTML included form to post messages.
-* API to process messages on Flask.
+* Exchange messages by WebSocket
+* HTML for reference implementtion
+
+Usage
+=====
+
+Prerequirements
+---------------
+
+You must ready environment to run Errbot(>=6.0.x).
+
+
+Installation
+------------
+
+Clone this project and configure to use as extra-backend for Errbot.
+
+.. code-block: bash
+
+   $ cd /path/to/your-errbot-env
+   $ git clone https://github.com/attakei/errbot-webapp-backend-plugin.git
+   $ echo "BOT_EXTRA_BACKEND_DIR = './errbot-webapp-backend-plugin'" >> ./config.py
+   $ echo "BACKEND = 'WEBAPP'" >> ./config.py
+
+
+To Do
+=====
+
+- Configuration HOST, PORT and static resource dir
+- 'As admin' mode
+- Authorize by session
+
+License
+=======
+
+GPLv3. `See it <./LICENSE>`_
