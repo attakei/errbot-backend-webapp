@@ -47,23 +47,21 @@
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.2/marked.min.js"></script>
   <script type="text/javascript">
+    const socket = new WebSocket('ws://localhost:8000/connect')
     var frmElm = document.getElementById('send-message-frm')
     var iptElm = document.getElementById('send-message-ipt')
     var btnElm = document.getElementById('send-message-btn')
     var postMessage = (e) => {
       var msg = iptElm.value
-      fetch('/msg', {
-        method: 'POST',
-        body: msg,
-      })
-      .then((resp) => resp.text())
-      .then((respBody) => {
-        document.getElementById('last-message').textContent = msg
-        document.getElementById('last-response').innerHTML = marked(respBody)
-      })
+      socket.send(iptElm.value)
       iptElm.value = ''
+      document.getElementById('last-message').textContent = msg
+      document.getElementById('last-response').innerHTML = ''
       e.preventDefault()
     }
+    socket.addEventListener('message', (e) => {
+      document.getElementById('last-response').innerHTML += marked(event.data)
+    })
     btnElm.addEventListener('onclick', postMessage, false)
     frmElm.addEventListener('submit', postMessage, false)
   </script>
