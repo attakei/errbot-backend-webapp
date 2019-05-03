@@ -42,7 +42,7 @@ Clone this project and configure to use as extra-backend for Errbot.
    $ cd /path/to/your-errbot-env
    $ git clone https://github.com/attakei/errbot-webapp-backend-plugin.git
    $ echo "BOT_EXTRA_BACKEND_DIR = './errbot-webapp-backend-plugin'" >> ./config.py
-   $ echo "BACKEND = 'WEBAPP'" >> ./config.py
+   $ echo "BACKEND = 'Webapp'" >> ./config.py
 
 
 To Do
