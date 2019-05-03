@@ -5,7 +5,6 @@ from queue import Queue
 from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
-from errbot.backends.text import TextRoom
 from errbot.core import ErrBot
 from sanic import Sanic
 from sanic.response import html
@@ -89,7 +88,6 @@ class WebappBackend(ErrBot):
         else:
             self.bot_identifier = self.build_identifier('@webmaster')
         self.webapp = None
-        self._rooms = []
 
     def build_identifier(self, text_representation: str) -> Identifier:
         return WebappPerson(text_representation)
@@ -119,21 +117,12 @@ class WebappBackend(ErrBot):
 
     @property
     def rooms(self):
-        return self._rooms
+        return []
 
     def query_room(self, room):
-        if not room.startswith('#'):
-            raise ValueError('A Room name must start by #.')
-        text_room = TextRoom(room[1:], self)
-        if text_room not in self._rooms:
-            self._rooms.insert(0, text_room)
-        else:
-            self._rooms.insert(
-                0, self._rooms.pop(self._rooms.index(text_room)))
-        return text_room
+        raise ValueError('Room is not implemented')
 
     def serve_forever(self):
-        self.query_room('#testroom').join()
         self.connect_callback()
         self.webapp = WebappServer(self)
         self.webapp.run()
