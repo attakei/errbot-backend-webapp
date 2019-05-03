@@ -37,7 +37,7 @@ Installation
 
 Clone this project and configure to use as extra-backend for Errbot.
 
-.. code-block: bash
+.. code-block:: bash
 
    $ cd /path/to/your-errbot-env
    $ git clone https://github.com/attakei/errbot-webapp-backend-plugin.git
