@@ -2,6 +2,9 @@
 Errbot Webapp backend plugin
 ============================
 
+.. image:: https://travis-ci.com/attakei/errbot-webapp-backend-plugin.svg?branch=master
+    :target: https://travis-ci.com/attakei/errbot-webapp-backend-plugin
+
 **This is alpha-level implementation. Use only local**
 
 Web UI based backend interface for Errbot (not Webhook feature).
