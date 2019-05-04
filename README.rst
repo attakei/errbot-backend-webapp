@@ -18,7 +18,7 @@ It may be able to supply public chat-bot on a website with Errbot.
 Demo
 ====
 
-Not yet. Display screenshot after.
+.. image:: ./demo.gif
 
 Features
 ========
