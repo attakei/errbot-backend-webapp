@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-__version__ = '0.0.1'
+__version__ = '0.0.1-alpha.1'
 
 
 def get_plugin_dir() -> str:
