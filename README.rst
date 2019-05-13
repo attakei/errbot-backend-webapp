@@ -38,6 +38,9 @@ You must ready environment to run Errbot(>=6.0.x).
 Installation
 ------------
 
+As single source
+^^^^^^^^^^^^^^^^
+
 Clone this project and configure to use as extra-backend for Errbot.
 
 .. code-block:: bash
@@ -47,6 +50,17 @@ Clone this project and configure to use as extra-backend for Errbot.
    $ echo "BOT_EXTRA_BACKEND_DIR = './errbot-webapp-backend-plugin'" >> ./config.py
    $ echo "BACKEND = 'Webapp'" >> ./config.py
 
+
+As PyPI package
+^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   $ cd /path/to/your-errbot-env
+   $ pip install errbot-webapp-backend
+   $ echo "import errbot_webapp_backend" >> ./config.py
+   $ echo "BOT_EXTRA_BACKEND_DIR = errbot_webapp_backend.get_plugin_dir()" >> ./config.py
+   $ echo "BACKEND = 'Webapp'" >> ./config.py
 
 To Do
 =====
