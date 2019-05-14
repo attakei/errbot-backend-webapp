@@ -1,0 +1,2 @@
+include errbot_webapp_backend/webapp.plug
+recursive-include errbot_webapp_backend/resources *
