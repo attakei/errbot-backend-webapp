@@ -2,8 +2,8 @@
 Errbot Webapp backend plugin
 ============================
 
-.. image:: https://travis-ci.com/attakei/errbot-webapp-backend-plugin.svg?branch=master
-    :target: https://travis-ci.com/attakei/errbot-webapp-backend-plugin
+.. image:: https://travis-ci.com/attakei/errbot-backend-webapp.svg?branch=master
+    :target: https://travis-ci.com/attakei/errbot-backend-webapp
 
 **This is alpha-level implementation. Use only local**
 
@@ -46,8 +46,8 @@ Clone this project and configure to use as extra-backend for Errbot.
 .. code-block:: bash
 
    $ cd /path/to/your-errbot-env
-   $ git clone https://github.com/attakei/errbot-webapp-backend-plugin.git
-   $ echo "BOT_EXTRA_BACKEND_DIR = './errbot-webapp-backend-plugin'" >> ./config.py
+   $ git clone https://github.com/attakei/errbot-backend-webapp.git
+   $ echo "BOT_EXTRA_BACKEND_DIR = './errbot-backend-webapp'" >> ./config.py
    $ echo "BACKEND = 'Webapp'" >> ./config.py
 
 
@@ -57,9 +57,9 @@ As PyPI package
 .. code-block:: bash
 
    $ cd /path/to/your-errbot-env
-   $ pip install errbot-webapp-backend
-   $ echo "import errbot_webapp_backend" >> ./config.py
-   $ echo "BOT_EXTRA_BACKEND_DIR = errbot_webapp_backend.get_plugin_dir()" >> ./config.py
+   $ pip install errbot-backend-webapp
+   $ echo "import errbot_backend_webapp" >> ./config.py
+   $ echo "BOT_EXTRA_BACKEND_DIR = errbot_backend_webapp.get_plugin_dir()" >> ./config.py
    $ echo "BACKEND = 'Webapp'" >> ./config.py
 
 To Do
