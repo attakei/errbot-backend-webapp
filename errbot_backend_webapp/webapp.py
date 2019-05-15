@@ -164,7 +164,12 @@ class WebappServer(object):
         self._app.add_task(self._process_queue)
 
     def run(self):
-        self._app.run(protocol=WebSocketProtocol)
+        webapp_config = WebappConfig(self._errbot.bot_config)
+        self._app.run(
+            host=webapp_config.host,
+            port=webapp_config.port,
+            protocol=WebSocketProtocol,
+        )
 
     async def _process_queue(self):
         """Sanic background task to send WebSocket messages"""
