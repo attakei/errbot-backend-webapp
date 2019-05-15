@@ -14,6 +14,17 @@ from sanic.websocket import WebSocketProtocol
 Logger = logging.getLogger(__name__)
 
 
+class WebappConfig(object):
+    """Webapp server configuration
+    """
+    def __init__(self, bot_config):
+        conf = getattr(bot_config, 'BOT_IDENTITY', object())
+        self.host: str = getattr(conf, 'host', 'localhost')
+        """Listen host"""
+        self.port: int = getattr(conf, 'port', 8080)
+        """Listen port"""
+
+
 class WebappPerson(Person):
     def __init__(self, person, **opts):
         self._person = person
