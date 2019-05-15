@@ -16,8 +16,8 @@ from errbot_backend_webapp.webapp import WebappConfig
 def test_webapp_config(config, key, expected):
     class Config(object):
         def __init__(self, param):
-            for k, v in param.items():
-                setattr(self, k, v)
+            self.BOT_IDENTITY = param
+
     bot_config = Config(config)
     webapp_config = WebappConfig(bot_config)
     assert getattr(webapp_config, key) == expected
