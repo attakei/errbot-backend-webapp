@@ -183,9 +183,9 @@ class WebappServer(object):
 
     async def _get_index(self, request):
         """Render index document"""
-        index_html = self._static_dir / 'index.html'
         # TODO: Need performance check
-        jinja2_env = Environment(loader=FileSystemLoader(str(self._static_dir)))
+        jinja2_env = Environment(
+            loader=FileSystemLoader(str(self._static_dir)))
         template = jinja2_env.get_template('index.html')
         return html(template.render({'request': request}))
 
