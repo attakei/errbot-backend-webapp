@@ -47,8 +47,13 @@ Clone this project and configure to use as extra-backend for Errbot.
 
    $ cd /path/to/your-errbot-env
    $ git clone https://github.com/attakei/errbot-backend-webapp.git
-   $ echo "BOT_EXTRA_BACKEND_DIR = './errbot-backend-webapp'" >> ./config.py
-   $ echo "BACKEND = 'Webapp'" >> ./config.py
+   $ pip install -r errbot-backend-webapp/requirements.txt
+
+
+.. code-block:: python
+
+   BOT_EXTRA_BACKEND_DIR = './errbot-backend-webapp'
+   BACKEND = 'Webapp'
 
 
 As PyPI package
@@ -58,9 +63,13 @@ As PyPI package
 
    $ cd /path/to/your-errbot-env
    $ pip install errbot-backend-webapp
-   $ echo "import errbot_backend_webapp" >> ./config.py
-   $ echo "BOT_EXTRA_BACKEND_DIR = errbot_backend_webapp.get_plugin_dir()" >> ./config.py
-   $ echo "BACKEND = 'Webapp'" >> ./config.py
+
+.. code-block:: python
+
+   import errbot_backend_webapp
+
+   BOT_EXTRA_BACKEND_DIR = errbot_backend_webapp.get_plugin_dir()
+   BACKEND = 'Webapp'
 
 
 Configuration
