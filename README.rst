@@ -62,10 +62,25 @@ As PyPI package
    $ echo "BOT_EXTRA_BACKEND_DIR = errbot_backend_webapp.get_plugin_dir()" >> ./config.py
    $ echo "BACKEND = 'Webapp'" >> ./config.py
 
+
+Configuration
+-------------
+
+Webapp host and port can configure by your ``config.py``.
+Plugin see ``BOT_IDENTITY``.
+
+.. code-block:: python
+
+   BOT_IDENTITY = {
+       'host': '127.0.0.1',  # Listen host. default is 'localhost'
+       'port': 8001,         # Listen port. default is 8080
+   }
+
+
 To Do
 =====
 
-- Configuration HOST, PORT and static resource dir
+- Configuration static resource dir
 - 'As admin' mode
 - Authorize by session
 
