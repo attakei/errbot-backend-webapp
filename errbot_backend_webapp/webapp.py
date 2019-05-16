@@ -14,6 +14,17 @@ from sanic.websocket import WebSocketProtocol
 Logger = logging.getLogger(__name__)
 
 
+class WebappConfig(object):
+    """Webapp server configuration
+    """
+    def __init__(self, bot_config):
+        conf = getattr(bot_config, 'BOT_IDENTITY', {})
+        self.host: str = conf.get('host', 'localhost')
+        """Listen host"""
+        self.port: int = conf.get('port', 8080)
+        """Listen port"""
+
+
 class WebappPerson(Person):
     def __init__(self, person, **opts):
         self._person = person
@@ -153,7 +164,12 @@ class WebappServer(object):
         self._app.add_task(self._process_queue)
 
     def run(self):
-        self._app.run(protocol=WebSocketProtocol)
+        webapp_config = WebappConfig(self._errbot.bot_config)
+        self._app.run(
+            host=webapp_config.host,
+            port=webapp_config.port,
+            protocol=WebSocketProtocol,
+        )
 
     async def _process_queue(self):
         """Sanic background task to send WebSocket messages"""

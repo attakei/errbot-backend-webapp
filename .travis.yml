@@ -8,7 +8,8 @@ matrix:
       env: TOXENV=py37
 
 install:
-  - pip install -r requirements-dev.txt
+  - pip install -r requirements-dev.txt -r requirements.txt
 
 script:
   - flake8
+  - pytest
