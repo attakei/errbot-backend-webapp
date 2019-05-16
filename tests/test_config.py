@@ -11,6 +11,9 @@ from errbot_backend_webapp.webapp import WebappConfig
         # Defaults
         ({}, 'host', 'localhost'),
         ({}, 'port', 8080),
+        # Overrides
+        ({'host': '0.0.0.0'}, 'host', '0.0.0.0'),
+        ({'port': 8081}, 'port', 8081),
     ]
 )
 def test_webapp_config(config, key, expected):
