@@ -187,7 +187,7 @@ class WebappServer(object):
         # TODO: Need performance check
         jinja2_env = Environment(loader=FileSystemLoader(str(self._static_dir)))
         template = jinja2_env.get_template('index.html')
-        return html(template.render())
+        return html(template.render({'request': request}))
 
     async def _handle_socket(self, request, ws):
         """Handle WebSocket connection.
