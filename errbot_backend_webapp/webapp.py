@@ -6,6 +6,7 @@ from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.core import ErrBot
+from jinja2 import Environment, FileSystemLoader
 from sanic import Sanic
 from sanic.response import html
 from sanic.websocket import WebSocketProtocol
@@ -183,10 +184,10 @@ class WebappServer(object):
     async def _get_index(self, request):
         """Render index document"""
         index_html = self._static_dir / 'index.html'
-        body = ''
-        with index_html.open() as fp:
-            body = fp.read()
-        return html(body)
+        # TODO: Need performance check
+        jinja2_env = Environment(loader=FileSystemLoader(str(self._static_dir)))
+        template = jinja2_env.get_template('index.html')
+        return html(template.render())
 
     async def _handle_socket(self, request, ws):
         """Handle WebSocket connection.
