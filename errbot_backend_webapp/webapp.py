@@ -4,6 +4,14 @@ from typing import Mapping
 from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.core import ErrBot
 
+# Import as single file plugin
+try:
+    import errbot_backend_webapp  # noqa: flake8
+except ImportError:
+    import sys
+    import pathlib
+    sys.path.append(str(pathlib.Path(__file__).parents[1]))
+
 from errbot_backend_webapp.server import WebServer
 
 Logger = logging.getLogger(__name__)
