@@ -139,8 +139,9 @@ class WebappBackend(ErrBot):
 
     def serve_forever(self):
         self.connect_callback()
+        config = WebappConfig(self.bot_config)
         self.webapp = WebappConector(self)
-        self.webapp.run()
+        self.webapp.run(config)
 
     def callback_message(self, msg: WebappMessage):
         super().callback_message(msg)
@@ -161,9 +162,9 @@ class WebappConector(object):
         self._errbot = errbot
         self._server = WebServer()
 
-    def run(self):
+    def run(self, config):
         self._server.configure(handler=self._handle_socket)
-        self._server.run()
+        self._server.run(config)
 
     def _handle_socket(self, ws):
         frm = WebappPerson(

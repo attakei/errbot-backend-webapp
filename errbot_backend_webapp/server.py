@@ -22,11 +22,11 @@ class WebServer(object):
             handler = self._sockets_connect
         self._sockets.route('/connect')(handler)
 
-    def run(self, debug=False):
+    def run(self, config=None):
         """Run server
         """
         server = pywsgi.WSGIServer(
-            ('', 5000), self._app, handler_class=WebSocketHandler)
+            (config.host, config.port), self._app, handler_class=WebSocketHandler)
         server.serve_forever()
 
     def _get_index(self):
