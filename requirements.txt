@@ -1,2 +1,3 @@
 Sanic
+flask-sockets
 Jinja2
