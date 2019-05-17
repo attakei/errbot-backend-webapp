@@ -12,6 +12,7 @@ except ImportError:
     import pathlib
     sys.path.append(str(pathlib.Path(__file__).parents[1]))
 
+from errbot_backend_webapp.config import WebappConfig
 from errbot_backend_webapp.server import WebServer
 
 Logger = logging.getLogger(__name__)

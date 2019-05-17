@@ -2,7 +2,7 @@
 """
 import pytest
 
-from errbot_backend_webapp.webapp import WebappConfig
+from errbot_backend_webapp.config import WebappConfig
 
 
 @pytest.mark.parametrize(
