@@ -36,7 +36,7 @@ class WebServer(object):
             loader=FileSystemLoader(str(self._resources_dir)))
         template = jinja2_env.get_template('index.html')
         return template.render({'request': request})
-        
+
     def _sockets_connect(self, ws):
         while not ws.closed:
             message = ws.receive()

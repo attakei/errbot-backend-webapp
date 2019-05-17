@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
