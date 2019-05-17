@@ -1,29 +1,21 @@
-import asyncio
 import logging
-from pathlib import Path
-from queue import Queue
 from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.core import ErrBot
-from jinja2 import Environment, FileSystemLoader
-from sanic import Sanic
-from sanic.response import html
-from sanic.websocket import WebSocketProtocol
 
+# Import as single file plugin
+try:
+    import errbot_backend_webapp  # noqa: flake8
+except ImportError:
+    import sys
+    import pathlib
+    sys.path.append(str(pathlib.Path(__file__).parents[1]))
+
+from errbot_backend_webapp.config import WebappConfig
+from errbot_backend_webapp.server import WebServer
 
 Logger = logging.getLogger(__name__)
-
-
-class WebappConfig(object):
-    """Webapp server configuration
-    """
-    def __init__(self, bot_config):
-        conf = getattr(bot_config, 'BOT_IDENTITY', {})
-        self.host: str = conf.get('host', 'localhost')
-        """Listen host"""
-        self.port: int = conf.get('port', 8080)
-        """Listen port"""
 
 
 class WebappPerson(Person):
@@ -136,8 +128,9 @@ class WebappBackend(ErrBot):
 
     def serve_forever(self):
         self.connect_callback()
-        self.webapp = WebappServer(self)
-        self.webapp.run()
+        config = WebappConfig(self.bot_config)
+        self.webapp = WebappConector(self)
+        self.webapp.run(config)
 
     def callback_message(self, msg: WebappMessage):
         super().callback_message(msg)
@@ -150,55 +143,23 @@ class WebappBackend(ErrBot):
         body_ = partial_message.body
         ws_ = to_.opts.get('websocket', False)
         if ws_:
-            self.webapp._queue.put(ws_.send(body_))
+            ws_.send(body_)
 
 
-class WebappServer(object):
+class WebappConector(object):
     def __init__(self, errbot: WebappBackend):
         self._errbot = errbot
-        self._static_dir = Path(__file__).parent / 'resources'
-        self._queue = Queue()
-        self._app = Sanic(__name__)
-        self._app.static('', str(self._static_dir))
-        self._app.route('/')(self._get_index)
-        self._app.websocket('/connect')(self._handle_socket)
-        self._app.add_task(self._process_queue)
+        self._server = WebServer()
 
-    def run(self):
-        webapp_config = WebappConfig(self._errbot.bot_config)
-        self._app.run(
-            host=webapp_config.host,
-            port=webapp_config.port,
-            protocol=WebSocketProtocol,
-        )
+    def run(self, config):
+        self._server.configure(handler=self._handle_socket)
+        self._server.run(config)
 
-    async def _process_queue(self):
-        """Sanic background task to send WebSocket messages"""
-        while True:
-            if self._queue.empty():
-                await asyncio.sleep(1)
-                continue
-            while not self._queue.empty():
-                await self._queue.get()
-
-    async def _get_index(self, request):
-        """Render index document"""
-        # TODO: Need performance check
-        jinja2_env = Environment(
-            loader=FileSystemLoader(str(self._static_dir)))
-        template = jinja2_env.get_template('index.html')
-        return html(template.render({'request': request}))
-
-    async def _handle_socket(self, request, ws):
-        """Handle WebSocket connection.
-
-        - Waiting for sending message
-        - Pass message to Errbot
-        """
+    def _handle_socket(self, ws):
         frm = WebappPerson(
             '@anonymous', websocket=ws)
-        while True:
-            data = await ws.recv()
+        while not ws.closed:
+            data = ws.receive()
             msg = self._errbot.build_message(data)
             msg.frm = frm
             msg.to = self._errbot.bot_identifier
