@@ -26,7 +26,9 @@ class WebServer(object):
         """Run server
         """
         server = pywsgi.WSGIServer(
-            (config.host, config.port), self._app, handler_class=WebSocketHandler)
+            (config.host, config.port),
+            self._app,
+            handler_class=WebSocketHandler)
         server.serve_forever()
 
     def _get_index(self):
