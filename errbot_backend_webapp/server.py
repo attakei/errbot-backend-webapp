@@ -15,10 +15,12 @@ class WebServer(object):
         self._app: Flask = Flask(__name__)
         self._sockets: Sockets = Sockets(self._app)
 
-    def configure(self):
+    def configure(self, handler=None):
         self._app.config['SECRET_KEY'] = 'secret'
         self._app.route('/')(self._get_index)
-        self._sockets.route('/connect')(self._sockets_connect)
+        if handler is None:
+            handler = self._sockets_connect
+        self._sockets.route('/connect')(handler)
 
     def run(self, debug=False):
         """Run server
