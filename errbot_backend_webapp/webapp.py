@@ -1,7 +1,5 @@
-import asyncio
 import logging
 from pathlib import Path
-from queue import Queue
 from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
@@ -147,13 +145,12 @@ class WebappBackend(ErrBot):
         body_ = partial_message.body
         ws_ = to_.opts.get('websocket', False)
         if ws_:
-            self.webapp._queue.put(ws_.send(body_))
+            ws_.send(body_)
 
 
 class WebappConector(object):
     def __init__(self, errbot: WebappBackend):
         self._errbot = errbot
-        self._queue = Queue()
         self._server = WebServer()
 
     def run(self):
