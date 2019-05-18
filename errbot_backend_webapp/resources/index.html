@@ -47,21 +47,32 @@
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.2/marked.min.js"></script>
   <script type="text/javascript">
-    const socket = new WebSocket('ws://{{ request.host }}/connect')
+    const connect = () => {
+      return new Promise((resolve, reject) => {
+        const socket = new WebSocket('ws://{{ request.host }}/connect')
+        socket.addEventListener('message', (e) => {
+          document.getElementById('last-response').innerHTML += marked(event.data)
+        })
+        socket.onopen = () => resolve(socket)
+        socket.onerror = (err) => reject(err)
+      })
+    }
+    let socket
     var frmElm = document.getElementById('send-message-frm')
     var iptElm = document.getElementById('send-message-ipt')
     var btnElm = document.getElementById('send-message-btn')
-    var postMessage = (e) => {
+    var postMessage = async (e) => {
+      e.preventDefault()
+      if (socket && socket.readyState == WebSocket.OPEN) {
+      } else {
+        socket = await connect()
+      }
       var msg = iptElm.value
       socket.send(iptElm.value)
       iptElm.value = ''
       document.getElementById('last-message').textContent = msg
       document.getElementById('last-response').innerHTML = ''
-      e.preventDefault()
     }
-    socket.addEventListener('message', (e) => {
-      document.getElementById('last-response').innerHTML += marked(event.data)
-    })
     btnElm.addEventListener('onclick', postMessage, false)
     frmElm.addEventListener('submit', postMessage, false)
   </script>
