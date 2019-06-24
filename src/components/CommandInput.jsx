@@ -1,14 +1,16 @@
 import React from 'react'
+import { Button, Form } from 'react-bulma-components'
 
 
 const render = (props) => {
   return (
-    <div>
-      <form onSubmit={props.submit}>
-        <input type="text" value={props.currentInput} onChange={props.changeInput} />
-        <button onKeyPress={props.submit}>Submit</button>
-      </form>
-    </div>
+    <form onSubmit={props.submit}>
+      <Form.Field horizontal>
+        <Form.Label>Command?: </Form.Label>
+        <Form.Input value={props.currentInput} onChange={props.changeInput} />
+        <Button onClick={props.submit}>Submit</Button>
+      </Form.Field>
+    </form>
   )
 }
 
