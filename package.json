@@ -7,6 +7,9 @@
   "author": "Kazuya Takei <attakei@gmail.com>",
   "license": "GPLv3",
   "private": true,
+  "scripts": {
+    "build": "parcel build"
+  },
   "dependencies": {
     "dayjs": "^1.8.14",
     "marked": "^0.6.2",
@@ -17,7 +20,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
-    "babel-preset-react-app": "^9.0.0"
+    "babel-preset-react-app": "^9.0.0",
+    "parcel": "^1.12.3"
   },
   "babel": {
     "presets": [
