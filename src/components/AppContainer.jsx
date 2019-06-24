@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import React from 'react'
+import { Container, Heading, Section } from 'react-bulma-components'
 import Scroll from 'react-scroll'
 
 import CommandInput from './CommandInput'
@@ -19,16 +20,21 @@ export default class AppContainer extends React.Component {
 
   render() {
     return (
-      <>
-        <LogHistory logs={this.state.logs} />
-        <div ref={this.commandInputRef}>
-          <CommandInput
-            currentInput={this.state.inputValue}
-            changeInput={(e) => this.changeInput(e)}
-            submit={(e) => this.sendCommand(e)} 
-          />
-        </div>
-      </>
+      <Section>
+        <Container>
+          <Heading>Errbot webapp</Heading>
+          <LogHistory logs={this.state.logs} />
+        </Container>
+        <Container>
+          <div ref={this.commandInputRef}>
+            <CommandInput
+              currentInput={this.state.inputValue}
+              changeInput={(e) => this.changeInput(e)}
+              submit={(e) => this.sendCommand(e)} 
+            />
+          </div>
+        </Container>
+      </Section>
     )
   }
 
@@ -47,7 +53,6 @@ export default class AppContainer extends React.Component {
     if (this.state.socket && this.state.socket.readyState == WebSocket.OPEN) {
     } else {
       await this.connectSocket()
-      console.log('koko2')
     }
     this.state.socket.send(inputValue)
   }
@@ -70,7 +75,7 @@ export default class AppContainer extends React.Component {
         })
         const target = this.commandInputRef.current
         const scroll = Scroll.animateScroll
-        scroll.scrollTo(target.offsetTop)
+        scroll.scrollTo(target.parentElement.offsetTop)
       })
       socket.onopen = () => resolve(socket)
       socket.onerror = (err) => reject(err)
