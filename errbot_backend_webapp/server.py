@@ -12,7 +12,8 @@ from jinja2 import Environment, FileSystemLoader
 class WebServer(object):
     def __init__(self):
         self._resources_dir: Path = Path(__file__).parent / 'resources'
-        self._app: Flask = Flask(__name__)
+        self._app: Flask = Flask(
+            __name__, static_folder=self._resources_dir / 'static')
         self._sockets: Sockets = Sockets(self._app)
 
     def configure(self, handler=None):
