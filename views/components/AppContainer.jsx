@@ -64,22 +64,24 @@ export default class AppContainer extends React.Component {
   async connectSocket() {
     return new Promise((resolve, reject) => {
       const socket = new WebSocket(this.props.socketUrl)
-      socket.addEventListener('message', (e) => {
-        this.setState(prev => {
-          return {
-            ...prev,
-            logs: prev.logs.concat([
-              {type:'recv', body: e.data, timestamp: dayjs().valueOf()}
-            ])
-          }
-        })
-        const target = this.commandInputRef.current
-        const scroll = Scroll.animateScroll
-        scroll.scrollTo(target.parentElement.offsetTop)
-      })
+      socket.onmessage = (event) => this.recieveMessage(event)
       socket.onopen = () => resolve(socket)
       socket.onerror = (err) => reject(err)
       this.setState({socket, })
     })
   }
+
+  recieveMessage(event) {
+    this.setState(prev => {
+      return {
+        ...prev,
+        logs: prev.logs.concat([
+          {type:'recv', body: event.data, timestamp: dayjs().valueOf()}
+        ])
+      }
+    })
+    const target = this.commandInputRef.current
+    const scroll = Scroll.animateScroll
+    scroll.scrollTo(target.parentElement.offsetTop)
+  } 
 }
