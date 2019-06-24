@@ -58,7 +58,7 @@ export default class AppContainer extends React.Component {
 
   async connectSocket() {
     return new Promise((resolve, reject) => {
-      const socket = new WebSocket('ws://localhost:8080/connect')
+      const socket = new WebSocket(this.props.socketUrl)
       socket.addEventListener('message', (e) => {
         this.setState(prev => {
           return {
