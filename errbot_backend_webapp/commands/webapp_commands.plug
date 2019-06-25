@@ -1,0 +1,7 @@
+[Core]
+Name = WebappCommands
+Module = webapp_commands
+
+[Documentation]
+Description = Command only available in Webapp backend with flag
+

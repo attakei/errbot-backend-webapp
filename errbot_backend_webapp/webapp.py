@@ -90,6 +90,17 @@ class WebappBackend(ErrBot):
         else:
             self.bot_identifier = self.build_identifier('@webmaster')
         self.webapp = None
+        config = WebappConfig(self.bot_config)
+        if config.use_commands:
+            Logger.debug('Use webapp commands')
+            if isinstance(self.bot_config.BOT_EXTRA_PLUGIN_DIR, str):
+                self.bot_config.BOT_EXTRA_PLUGIN_DIR = [
+                    self.bot_config.BOT_EXTRA_PLUGIN_DIR,
+                ]
+            self.bot_config.BOT_EXTRA_PLUGIN_DIR += [
+                str(pathlib.Path(__file__).parent / 'commands')
+            ]
+
 
     def build_identifier(self, text_representation: str) -> Identifier:
         return WebappPerson(text_representation)
