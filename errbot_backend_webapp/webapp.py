@@ -10,7 +10,7 @@ from errbot.core import ErrBot
 if __name__ == 'errbot.backends.webapp':
     sys.path.append(str(pathlib.Path(__file__).parents[1]))
 
-from errbot_backend_webapp.config import WebappConfig
+from errbot_backend_webapp.config import DEFAULT_CONNECTED_USER, WebappConfig
 from errbot_backend_webapp.server import WebServer
 
 Logger = logging.getLogger(__name__)
@@ -169,7 +169,7 @@ class WebappConector(object):
 
     def _handle_socket(self, ws):
         frm = WebappPerson(
-            '@anonymous', websocket=ws)
+            f'@{DEFAULT_CONNECTED_USER}', websocket=ws)
         while not ws.closed:
             data = ws.receive()
             msg = self._errbot.build_message(data)

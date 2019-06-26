@@ -2,6 +2,8 @@ import logging
 
 from errbot import BotPlugin, botcmd
 
+from errbot_backend_webapp.config import DEFAULT_CONNECTED_USER
+
 
 Logger = logging.getLogger(__name__)
 
@@ -32,5 +34,5 @@ class WebappCommands(BotPlugin):
                 usr = '@' + usr
             self._bot.user = self.build_identifier(usr)
         else:
-            self._bot.user = self.build_identifier('@anonymous')
+            self._bot.user = self.build_identifier(f'@{DEFAULT_CONNECTED_USER}')
         return f'You are now: {self._bot.user}.'

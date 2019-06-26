@@ -9,3 +9,6 @@ class WebappConfig(object):
         """Listen port"""
         self.use_commands: bool = conf.get('use_commands', False)
         """Use local commands"""
+
+
+DEFAULT_CONNECTED_USER = 'anonymous'
