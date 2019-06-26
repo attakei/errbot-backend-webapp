@@ -20,6 +20,9 @@ class WebappPerson(Person):
     def __init__(self, person, **opts):
         self._person = person
         self._opts = opts
+    
+    def __str__(self):
+        return self.person
 
     @property
     def person(self):
@@ -173,3 +176,6 @@ class WebappConector(object):
             msg.frm = frm
             msg.to = self._errbot.bot_identifier
             self._errbot.callback_message(msg)
+            if hasattr(self._errbot, 'user'):
+                frm = self._errbot.user
+                frm.opts['websocket'] = ws
