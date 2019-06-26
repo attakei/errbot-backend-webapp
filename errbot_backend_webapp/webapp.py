@@ -35,7 +35,7 @@ class WebappPerson(Person):
 
     @property
     def aclattr(self):
-        return ''
+        return self._person
 
     @property
     def fullname(self):
