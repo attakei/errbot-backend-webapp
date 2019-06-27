@@ -90,7 +90,6 @@ To Do
 =====
 
 - Configuration static resource dir
-- 'As admin' mode
 - Authorize by session
 
 License
