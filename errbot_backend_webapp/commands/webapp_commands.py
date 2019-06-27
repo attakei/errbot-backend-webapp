@@ -34,5 +34,6 @@ class WebappCommands(BotPlugin):
                 usr = '@' + usr
             self._bot.user = self.build_identifier(usr)
         else:
-            self._bot.user = self.build_identifier(f'@{DEFAULT_CONNECTED_USER}')
+            self._bot.user = self.build_identifier(
+                f'@{DEFAULT_CONNECTED_USER}')
         return f'You are now: {self._bot.user}.'

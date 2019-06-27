@@ -6,12 +6,15 @@ from typing import Mapping
 from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.core import ErrBot
 
-# Import as single file plugin
-if __name__ == 'errbot.backends.webapp':
+try:
+    import errbot_backend_webapp  # flake8: noqa
+except ImportError:
     sys.path.append(str(pathlib.Path(__file__).parents[1]))
-
-from errbot_backend_webapp.config import DEFAULT_CONNECTED_USER, WebappConfig
-from errbot_backend_webapp.server import WebServer
+finally:
+    from errbot_backend_webapp.config import (
+        DEFAULT_CONNECTED_USER, WebappConfig
+    )
+    from errbot_backend_webapp.server import WebServer
 
 Logger = logging.getLogger(__name__)
 
@@ -20,7 +23,7 @@ class WebappPerson(Person):
     def __init__(self, person, **opts):
         self._person = person
         self._opts = opts
-    
+
     def __str__(self):
         return self.person
 
@@ -103,7 +106,6 @@ class WebappBackend(ErrBot):
             self.bot_config.BOT_EXTRA_PLUGIN_DIR += [
                 str(pathlib.Path(__file__).parent / 'commands')
             ]
-
 
     def build_identifier(self, text_representation: str) -> Identifier:
         return WebappPerson(text_representation)
