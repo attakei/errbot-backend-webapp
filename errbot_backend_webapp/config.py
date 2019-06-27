@@ -11,4 +11,4 @@ class WebappConfig(object):
         """Use local commands"""
 
 
-DEFAULT_CONNECTED_USER = 'anonymous'
+DEFAULT_CLIENT_USERNAME = 'anonymous'

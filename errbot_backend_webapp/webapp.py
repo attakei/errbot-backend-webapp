@@ -12,7 +12,7 @@ except ImportError:
     sys.path.append(str(pathlib.Path(__file__).parents[1]))
 finally:
     from errbot_backend_webapp.config import (
-        DEFAULT_CONNECTED_USER, WebappConfig
+        DEFAULT_CLIENT_USERNAME, WebappConfig
     )
     from errbot_backend_webapp.server import WebServer
 
@@ -171,7 +171,7 @@ class WebappConector(object):
 
     def _handle_socket(self, ws):
         frm = WebappPerson(
-            f'@{DEFAULT_CONNECTED_USER}', websocket=ws)
+            f'@{DEFAULT_CLIENT_USERNAME}', websocket=ws)
         while not ws.closed:
             data = ws.receive()
             msg = self._errbot.build_message(data)
