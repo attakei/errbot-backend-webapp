@@ -1,19 +1,20 @@
 import logging
+import sys
+import pathlib
 from typing import Mapping
 
 from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.core import ErrBot
 
-# Import as single file plugin
 try:
-    import errbot_backend_webapp  # noqa: flake8
+    import errbot_backend_webapp  # noqa: F401
 except ImportError:
-    import sys
-    import pathlib
     sys.path.append(str(pathlib.Path(__file__).parents[1]))
-
-from errbot_backend_webapp.config import WebappConfig
-from errbot_backend_webapp.server import WebServer
+finally:
+    from errbot_backend_webapp.config import (
+        DEFAULT_CLIENT_USERNAME, WebappConfig
+    )
+    from errbot_backend_webapp.server import WebServer
 
 Logger = logging.getLogger(__name__)
 
@@ -22,6 +23,9 @@ class WebappPerson(Person):
     def __init__(self, person, **opts):
         self._person = person
         self._opts = opts
+
+    def __str__(self):
+        return self.person
 
     @property
     def person(self):
@@ -37,7 +41,7 @@ class WebappPerson(Person):
 
     @property
     def aclattr(self):
-        return ''
+        return self._person
 
     @property
     def fullname(self):
@@ -92,6 +96,16 @@ class WebappBackend(ErrBot):
         else:
             self.bot_identifier = self.build_identifier('@webmaster')
         self.webapp = None
+        config = WebappConfig(self.bot_config)
+        if config.use_commands:
+            Logger.debug('Use webapp commands')
+            if isinstance(self.bot_config.BOT_EXTRA_PLUGIN_DIR, str):
+                self.bot_config.BOT_EXTRA_PLUGIN_DIR = [
+                    self.bot_config.BOT_EXTRA_PLUGIN_DIR,
+                ]
+            self.bot_config.BOT_EXTRA_PLUGIN_DIR += [
+                str(pathlib.Path(__file__).parent / 'commands')
+            ]
 
     def build_identifier(self, text_representation: str) -> Identifier:
         return WebappPerson(text_representation)
@@ -157,10 +171,13 @@ class WebappConector(object):
 
     def _handle_socket(self, ws):
         frm = WebappPerson(
-            '@anonymous', websocket=ws)
+            f'@{DEFAULT_CLIENT_USERNAME}', websocket=ws)
         while not ws.closed:
             data = ws.receive()
             msg = self._errbot.build_message(data)
             msg.frm = frm
             msg.to = self._errbot.bot_identifier
             self._errbot.callback_message(msg)
+            if hasattr(self._errbot, 'user'):
+                frm = self._errbot.user
+                frm.opts['websocket'] = ws

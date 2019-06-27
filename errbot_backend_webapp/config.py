@@ -7,3 +7,8 @@ class WebappConfig(object):
         """Listen host"""
         self.port: int = conf.get('port', 8080)
         """Listen port"""
+        self.use_commands: bool = conf.get('use_commands', False)
+        """Use local commands"""
+
+
+DEFAULT_CLIENT_USERNAME = 'anonymous'
