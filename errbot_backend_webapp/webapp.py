@@ -7,7 +7,7 @@ from errbot.backends.base import Identifier, Message, ONLINE, Person
 from errbot.core import ErrBot
 
 try:
-    import errbot_backend_webapp  # flake8: noqa
+    import errbot_backend_webapp  # noqa: F401
 except ImportError:
     sys.path.append(str(pathlib.Path(__file__).parents[1]))
 finally:
